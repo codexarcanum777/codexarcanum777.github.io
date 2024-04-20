@@ -36563,22 +36563,12 @@ ${e2}`);
   var import_earcut2 = __toESM(require_earcut(), 1);
   extensions.add(browserExt, webworkerExt);
 
-  // src/game/helper/graphics.js
-  var graphics_exports = {};
-  __export(graphics_exports, {
-    createButton: () => createButton,
-    createText: () => createText,
-    loadTextures: () => loadTextures2
-  });
-
-  // src/game/constants.js
+  // src/constants.js
   var WIDTH = 480;
   var HEIGHT = 720;
   var X = 8;
   var Y = 8;
-  var MINES = 8;
-  var WIDTH_BUTTON = 200;
-  var HEIGHT_BUTTON = 50;
+  var MINES = 10;
   var TEXTURES = [
     "public/assets/tile00.png",
     "public/assets/tile20.png",
@@ -36596,20 +36586,27 @@ ${e2}`);
     "public/assets/tile50.png",
     "public/assets/tile60.png"
   ];
-  var WIN_MESSAGE = "You win!! :D";
-  var LOSE_MESSAGE = "You lose!! :C";
+  var WIDTH_BUTTON = 200;
+  var HEIGHT_BUTTON = 50;
   var WIDTH_CENTER = WIDTH / 2 - WIDTH_BUTTON / 2;
-  var BACK_BUTTON_MESSAGE = "Back";
-  var RESET_BUTTON_MESSAGE = "Reset";
-  var EASY_BUTTON_MESSAGE = "Easy";
-  var MEDIUM_BUTTON_MESSAGE = "Medium";
-  var HARD_BUTTON_MESSAGE = "Hard";
-  var TEST_BUTTON_MESSAGE = "Test";
   var FONT_FAMILY = "Arial";
   var FONT_SIZE = 24;
   var FONT_COLOR = "white";
+  var BACK_BUTTON_MESSAGE = "Back";
+  var EASY_BUTTON_MESSAGE = "Easy";
+  var MEDIUM_BUTTON_MESSAGE = "Medium";
+  var HARD_BUTTON_MESSAGE = "Hard";
+  var RESET_BUTTON_MESSAGE = "Reset";
+  var WON_MESSAGE = "You win :D!!";
+  var LOSE_MESSAGE = "You lose :C !!";
 
-  // src/game/helper/graphics.js
+  // src/helper/graphics.js
+  var graphics_exports = {};
+  __export(graphics_exports, {
+    createButton: () => createButton,
+    createText: () => createText,
+    loadTextures: () => loadTextures2
+  });
   async function loadTextures2() {
     const textures = {};
     for (let i2 = 0; i2 < TEXTURES.length; i2++) {
@@ -36642,12 +36639,11 @@ ${e2}`);
     return buttonContainer;
   }
 
-  // src/game/helper/game.js
+  // src/helper/game.js
   var game_exports = {};
   __export(game_exports, {
     expandEmptyPlace: () => expandEmptyPlace,
     generateMap: () => generateMap,
-    handlerAction: () => handlerAction,
     isOver: () => isOver,
     minePlayed: () => minePlayed
   });
@@ -36665,10 +36661,10 @@ ${e2}`);
   var placeMine = (map, width, height, mines) => {
     if (mines <= 0)
       return;
-    const x2 = Math.floor(Math.random() * width);
-    const y2 = Math.floor(Math.random() * height);
-    if (map[x2][y2] === 0) {
-      map[x2][y2] = -1;
+    const i2 = Math.floor(Math.random() * width);
+    const j2 = Math.floor(Math.random() * height);
+    if (map[i2][j2] === 0) {
+      map[i2][j2] = -1;
       mines -= 1;
       placeMine(map, width, height, mines);
     } else {
@@ -36678,7 +36674,7 @@ ${e2}`);
   var validateAndPlaceHelper = (map, i2, j2, width, height) => {
     if (i2 < 0 || i2 >= width)
       return;
-    if (j2 < 0 || j2 >= height)
+    if (j2 < 0 || j2 >= width)
       return;
     if (map[i2][j2] !== -1) {
       map[i2][j2] += 1;
@@ -36700,28 +36696,6 @@ ${e2}`);
       }
     }
   };
-  function expandEmptyPlace(map, playMap, width, height, i2, j2) {
-    if (i2 < 0 || i2 >= width)
-      return;
-    if (j2 < 0 || j2 >= height)
-      return;
-    if (map[i2][j2] === 0 && playMap[i2][j2] === 0) {
-      playMap[i2][j2] = -2;
-      expandEmptyPlace(map, playMap, width, height, i2, j2 - 1);
-      expandEmptyPlace(map, playMap, width, height, i2, j2 + 1);
-      expandEmptyPlace(map, playMap, width, height, i2 + 1, j2 - 1);
-      expandEmptyPlace(map, playMap, width, height, i2 + 1, j2);
-      expandEmptyPlace(map, playMap, width, height, i2 + 1, j2 + 1);
-      expandEmptyPlace(map, playMap, width, height, i2 - 1, j2 - 1);
-      expandEmptyPlace(map, playMap, width, height, i2 - 1, j2);
-      expandEmptyPlace(map, playMap, width, height, i2 - 1, j2 + 1);
-    } else if (map[i2][j2] >= 1) {
-      playMap[i2][j2] = map[i2][j2];
-      return;
-    } else {
-      return;
-    }
-  }
   function isOver(map, playMap, width, height, mines) {
     let count2 = 0;
     let complete = true;
@@ -36742,6 +36716,25 @@ ${e2}`);
       return [false, null];
     }
   }
+  function expandEmptyPlace(map, playMap, width, height, i2, j2) {
+    if (i2 < 0 || i2 >= width)
+      return;
+    if (j2 < 0 || j2 >= width)
+      return;
+    if (map[i2][j2] === 0 && playMap[i2][j2] === 0) {
+      playMap[i2][j2] = -2;
+      expandEmptyPlace(map, playMap, width, height, i2, j2 - 1);
+      expandEmptyPlace(map, playMap, width, height, i2, j2 + 1);
+      expandEmptyPlace(map, playMap, width, height, i2 + 1, j2 - 1);
+      expandEmptyPlace(map, playMap, width, height, i2 + 1, j2);
+      expandEmptyPlace(map, playMap, width, height, i2 + 1, j2 + 1);
+      expandEmptyPlace(map, playMap, width, height, i2 - 1, j2 - 1);
+      expandEmptyPlace(map, playMap, width, height, i2 - 1, j2);
+      expandEmptyPlace(map, playMap, width, height, i2 - 1, j2 + 1);
+    } else if (map[i2][j2] >= 1) {
+      playMap[i2][j2] = map[i2][j2];
+    }
+  }
   async function generateMap(width, height, mines) {
     const map = generateEmptyMap(width, height);
     const playMap = generateEmptyMap(width, height);
@@ -36749,62 +36742,65 @@ ${e2}`);
     await placeHelper(map, width, height);
     return [map, playMap];
   }
-  function minePlayed(map, x2, y2) {
+  function minePlayed(playMap, x2, y2) {
     let count2 = 0;
     for (let i2 = 0; i2 < x2; i2++) {
       for (let j2 = 0; j2 < y2; j2++) {
-        if (map[i2][j2] === -3) {
+        if (playMap[i2][j2] === -3) {
           count2 += 1;
         }
       }
     }
     return count2;
   }
-  function handlerAction(event, context2) {
-    if (context2.over)
-      return;
-    const target = event.target;
-    const buttonValue = event.data.button;
-    const valueX = target.mapX;
-    const valueY = target.mapJ;
-    const value = context2.map[valueX][valueY];
-    if (buttonValue === 0) {
-      if (value >= 1) {
-        context2.playMap[valueX][valueY] = value;
-      } else if (value === 0) {
-        expandEmptyPlace(context2.map, context2.playMap, context2.x, context2.y, valueX, valueY);
-      } else if (value === -1) {
-        context2.playMap[valueX][valueY] = -1;
-      }
-    } else if (buttonValue === 2) {
-      if (context2.playMap[valueX][valueY] === -3) {
-        context2.playMap[valueX][valueY] = 0;
-      } else if (context2.playMap[valueX][valueY] === 0) {
-        context2.playMap[valueX][valueY] = -3;
-      }
-    }
-    context2.placeMines = minePlayed(context2.playMap, context2.x, context2.y);
-  }
 
-  // src/game/containers/menu.js
+  // src/containers/menu.js
   var menu_exports = {};
   __export(menu_exports, {
+    buttonMenu: () => buttonMenu,
     create: () => create2,
-    render: () => render2,
     show: () => show2
   });
 
-  // src/game/containers/game.js
+  // src/containers/game.js
   var game_exports2 = {};
   __export(game_exports2, {
     create: () => create,
     createGame: () => createGame,
     createScore: () => createScore,
     createTable: () => createTable,
+    handlerAction: () => handlerAction,
     init: () => init2,
+    render: () => render,
     resetCurrentGame: () => resetCurrentGame,
-    show: () => show
+    show: () => show,
+    update: () => update
   });
+  function handlerAction(event, context2) {
+    if (context2.over)
+      return;
+    const target = event.target;
+    const buttonValue = event.data.button;
+    const valueI = target.mapI;
+    const valueJ = target.mapJ;
+    const value = context2.map[valueI][valueJ];
+    if (buttonValue === 0) {
+      if (value >= 1) {
+        context2.playMap[valueI][valueJ] = value;
+      } else if (value === 0) {
+        game_exports.expandEmptyPlace(context2.map, context2.playMap, context2.x, context2.y, valueI, valueJ);
+      } else if (value === -1) {
+        context2.playMap[valueI][valueJ] = -1;
+      }
+    } else if (buttonValue === 2) {
+      if (context2.playMap[valueI][valueJ] === -3) {
+        context2.playMap[valueI][valueJ] = 0;
+      } else if (context2.playMap[valueI][valueJ] === 0 && context2.placeMines < context2.mines) {
+        context2.playMap[valueI][valueJ] = -3;
+      }
+    }
+    context2.placeMines = game_exports.minePlayed(context2.playMap, context2.y, context2.x);
+  }
   function init2(context2) {
     const sizeX = context2.width / context2.x;
     const sizeY = context2.height * 0.8 / context2.y;
@@ -36813,56 +36809,59 @@ ${e2}`);
         const cell = new Sprite(context2.textures[0]);
         cell.x = i2 * sizeX;
         cell.y = j2 * sizeY;
-        cell.mapX = i2;
+        cell.mapI = i2;
         cell.mapJ = j2;
         cell.width = sizeX;
         cell.height = sizeY;
         cell.eventMode = "static";
         cell.cursor = "pointer";
         cell.on("pointerdown", (event) => {
-          game_exports.handlerAction(event, context2);
+          handlerAction(event, context2);
         });
         context2.containers.gameTableContainer.addChild(cell);
       }
     }
     context2.startTime = Date.now();
-    context2.minePlayed = 0;
-  }
-  function update(context2) {
-    context2.currentTime = (/* @__PURE__ */ new Date()).getTime() - context2.startTime;
-    context2.texts.gameScoreText.text = Math.floor(context2.currentTime / 1e3);
-    context2.texts.gameMineText.text = `${context2.placeMines}/${context2.mines}`;
+    context2.placeMines = 0;
   }
   function render(context2) {
     for (let i2 = 0; i2 < context2.containers.gameTableContainer.children.length; i2++) {
       const sprite = context2.containers.gameTableContainer.children[i2];
-      const valueX = sprite.mapX;
-      const valueY = sprite.mapJ;
-      const value = context2.playMap[valueX][valueY];
-      if (value === -2) {
-        sprite.texture = context2.textures[10];
-      } else if (value >= 0) {
+      const valueI = sprite.mapI;
+      const valueJ = sprite.mapJ;
+      const value = context2.playMap[valueI][valueJ];
+      if (value >= 0) {
         sprite.texture = context2.textures[value];
+      } else if (value === -2) {
+        sprite.texture = context2.textures[10];
       } else if (value === -3) {
         sprite.texture = context2.textures[11];
       } else if (value === -1) {
         sprite.texture = context2.textures[12];
       }
     }
-    const [over, win] = game_exports.isOver(context2.map, context2.playMap, context2.x, context2.y, context2.mines);
+    const [over, won] = game_exports.isOver(context2.map, context2.playMap, context2.x, context2.y, context2.mines);
     if (over) {
       context2.over = true;
       context2.app.ticker.stop();
-      if (win) {
+      if (won) {
+        console.log("you win!!");
         context2.containers.gameContainer.addChild(context2.containers.gameWonContainer);
       } else {
+        console.log("you lose!!");
         context2.containers.gameContainer.addChild(context2.containers.gameOverContainer);
       }
     }
   }
+  function update(context2) {
+    context2.currentTime = (/* @__PURE__ */ new Date()).getTime() - context2.startTime;
+    context2.texts.gameTextTime.text = Math.floor(context2.currentTime / 1e3);
+    context2.texts.gameTextMine.text = `${context2.placeMines}/${context2.mines}`;
+  }
   function show(context2) {
     context2.app.stage.removeChildren();
     context2.containers.gameContainer.removeChildren();
+    context2.containers.gameTableContainer.removeChildren();
     context2.containers.gameContainer.addChild(context2.containers.gameTableContainer, context2.containers.gameScoreContainer);
     context2.app.stage.addChild(context2.containers.gameContainer);
     context2.renderContainer = () => {
@@ -36882,8 +36881,8 @@ ${e2}`);
     const textMine = graphics_exports.createText(context2.placeMine, background.width - background.width / 4, background.height / 2);
     container.addChild(background, textTime, textMine);
     context2.containers.gameScoreContainer = container;
-    context2.texts.gameScoreText = textTime;
-    context2.texts.gameMineText = textMine;
+    context2.texts.gameTextTime = textTime;
+    context2.texts.gameTextMine = textMine;
   }
   function createTable(context2) {
     const container = new Container();
@@ -36893,11 +36892,7 @@ ${e2}`);
   }
   function createGame(context2) {
     const container = new Container();
-    console.log(context2.containers);
-    container.addChild(
-      context2.containers.gameScoreContainer,
-      context2.containers.gameTableContainer
-    );
+    container.addChild(context2.containers.gameTableContainer);
     context2.containers.gameContainer = container;
   }
   function create(context2) {
@@ -36915,7 +36910,7 @@ ${e2}`);
     });
   }
 
-  // src/game/containers/menu.js
+  // src/containers/menu.js
   function buttonMenu(context2, config, message, positionY) {
     const button = graphics_exports.createButton(context2.textures[13], message, WIDTH_CENTER, positionY, () => {
       [context2.x, context2.y, context2.mines] = config;
@@ -36936,24 +36931,37 @@ ${e2}`);
     };
     context2.app.ticker.start();
   }
-  function render2() {
-  }
   function create2(context2) {
     const container = new Container();
-    const easyButton = buttonMenu(context2, [8, 8, 8], EASY_BUTTON_MESSAGE, 200);
+    const easyButton = buttonMenu(context2, [8, 8, 10], EASY_BUTTON_MESSAGE, 200);
     const mediumButton = buttonMenu(context2, [16, 16, 40], MEDIUM_BUTTON_MESSAGE, 300);
     const hardButton = buttonMenu(context2, [32, 32, 99], HARD_BUTTON_MESSAGE, 400);
-    const testButton = buttonMenu(context2, [4, 4, 1], TEST_BUTTON_MESSAGE, 500);
-    container.addChild(easyButton, mediumButton, hardButton, testButton);
+    container.addChild(easyButton, mediumButton, hardButton);
     context2.containers.menuContainer = container;
   }
 
-  // src/game/containers/game_over.js
-  var game_over_exports = {};
-  __export(game_over_exports, {
+  // src/containers/game_won.js
+  var game_won_exports = {};
+  __export(game_won_exports, {
     create: () => create3
   });
   function create3(context2) {
+    const container = new Container();
+    const backButton = graphics_exports.createButton(context2.textures[13], BACK_BUTTON_MESSAGE, WIDTH_CENTER, 200, () => {
+      show2(context2);
+    });
+    const wonButton = graphics_exports.createButton(context2.textures[13], WON_MESSAGE, WIDTH_CENTER, 100, () => {
+    });
+    container.addChild(wonButton, backButton);
+    context2.containers.gameWonContainer = container;
+  }
+
+  // src/containers/game_over.js
+  var game_over_exports = {};
+  __export(game_over_exports, {
+    create: () => create4
+  });
+  function create4(context2) {
     const container = new Container();
     const loseButton = graphics_exports.createButton(context2.textures[13], LOSE_MESSAGE, WIDTH_CENTER, 100, () => {
     });
@@ -36967,23 +36975,7 @@ ${e2}`);
     context2.containers.gameOverContainer = container;
   }
 
-  // src/game/containers/game_won.js
-  var game_won_exports = {};
-  __export(game_won_exports, {
-    create: () => create4
-  });
-  function create4(context2) {
-    const container = new Container();
-    const backButton = graphics_exports.createButton(context2.textures[13], BACK_BUTTON_MESSAGE, WIDTH_CENTER, 200, () => {
-      show2(context2);
-    });
-    const winButton = graphics_exports.createButton(context2.textures[13], WIN_MESSAGE, WIDTH_CENTER, 100, () => {
-    });
-    container.addChild(winButton, backButton);
-    context2.containers.gameWonContainer = container;
-  }
-
-  // src/game/index.js
+  // src/index.js
   (async () => {
     const app = new Application();
     await app.init({ width: WIDTH, height: HEIGHT, backgroundAlpha: 0 });
@@ -36995,29 +36987,30 @@ ${e2}`);
       const context2 = {
         app,
         textures,
-        width: WIDTH,
-        height: HEIGHT,
-        startTime: null,
-        currentTime: 0,
-        endTime: null,
         x: X,
         y: Y,
         mines: MINES,
-        placeMines: 0,
+        width: WIDTH,
+        height: HEIGHT,
+        over: false,
         map: [[]],
         playMap: [[]],
-        over: false,
+        placeMine: 0,
+        currentTime: null,
+        startTime: null,
+        endTime: null,
+        placeMines: 0,
         containers: {
           menuContainer: null,
           gameContainer: null,
           gameTableContainer: null,
           gameScoreContainer: null,
-          gameOverContainer: null,
-          gameWonContainer: null
+          gameWonContainer: null,
+          gameOverContainer: null
         },
         texts: {
-          gameMineText: null,
-          gameTimeText: null
+          gameTextMine: null,
+          gameTextTime: null
         },
         updateContainer: () => {
         },
@@ -37026,8 +37019,8 @@ ${e2}`);
       };
       menu_exports.create(context2);
       game_exports2.create(context2);
-      game_over_exports.create(context2);
       game_won_exports.create(context2);
+      game_over_exports.create(context2);
       function init3() {
         app.stage.addChild(context2.containers.menuContainer);
       }
@@ -37035,17 +37028,16 @@ ${e2}`);
         app.ticker.add(gameLoop);
       }
       function stop() {
-        app.ticker.stop();
       }
       function update2() {
         context2.updateContainer();
       }
-      function render3() {
+      function render2() {
         context2.renderContainer();
       }
       function gameLoop() {
         update2();
-        render3();
+        render2();
       }
       init3();
       start();
