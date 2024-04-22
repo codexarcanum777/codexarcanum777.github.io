@@ -26,7 +26,7 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 github_username: codexarcanum777
 youtube_username: "@codexarcanum777"
-youtube_url: https://www.youtube.com/channel/UCeB_kmTZeLZCL1nvqssOegw
+youtube_url: https://www.youtube.com/channel/UCeB_kmTZeLZCL1nvqssOegw?sub_confirmation=1
 
 # Build settings
 theme: minima
